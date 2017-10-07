@@ -10,7 +10,7 @@ def exists(child):
     return child.get().val() is not None
 
 
-def database_push(items: [], is_debug: bool):
+def database_push(items: [], is_debug: bool, no_notification=False):
     if API_KEY is None or API_KEY is "":
         print("Define a valid SNAKE_API_KEY environment variable")
         return
@@ -25,7 +25,7 @@ def database_push(items: [], is_debug: bool):
     firebase = pyrebase.initialize_app(config)
     db = firebase.database()
 
-    for item in items:
+    for item in reversed(items):
         data = {
             "id": item.number,
             "title": item.title,
@@ -37,9 +37,10 @@ def database_push(items: [], is_debug: bool):
         child = db.child("news").child(str(item.number) + "-" + item.date).shallow()
 
         if not exists(child):
-            print("Creating /news/{}...".format(str(item.number) + item.date))
+            print("Creating /news/{}...".format(str(item.number) + "-" + item.date))
             db.child("news").child(str(item.number) + "-" + item.date).set(data)
-            fcm(item, is_debug)
+            if not no_notification:
+                fcm(item, is_debug)
 
 
 def fcm(item: News, is_debug: bool):

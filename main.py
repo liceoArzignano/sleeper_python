@@ -6,21 +6,24 @@ import webfetcher
 
 IS_DEBUG = False
 NO_NOTIFICATIONS = False
+ONE_SHOT = False
 
 
 def main():
     items = webfetcher.fetch(False)
-    if not NO_NOTIFICATIONS:
-        firebase.database_push(items, IS_DEBUG)
+    firebase.database_push(items, IS_DEBUG, NO_NOTIFICATIONS)
     print("Done")
-    # Schedule next execution
-    Timer(60 * 60, main).start()
+
+    if not ONE_SHOT:
+        # Schedule next execution
+        Timer(60 * 60, main).start()
 
 
 # Parse arguments
 parser = ArgumentParser()
 parser.add_argument("--debug", help="Send to debug builds instead of production ones", action="store_true")
 parser.add_argument("--no-notification", help="Don't send notifications to devices", action="store_true")
+parser.add_argument("--one-shot", help="Execute just once", action="store_true")
 
 args = parser.parse_args()
 if args.debug:
@@ -28,6 +31,9 @@ if args.debug:
     print("Debug mode")
 if args.no_notification:
     NO_NOTIFICATIONS = True
+if args.one_shot:
+    ONE_SHOT = True
+
 
 # Execute
 main()

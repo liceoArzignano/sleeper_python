@@ -1,1 +1,1 @@
-web: python3 main.py --debug --no-notification
+web: python3 main.py --debug
