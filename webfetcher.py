@@ -50,7 +50,8 @@ def fetch(is_private=False):
 
     fetched = []
     driver = webdriver.PhantomJS(DRIVER_PATH)
-    driver.set_page_load_timeout(60)
+    # 10 minutes timeout
+    driver.set_page_load_timeout(60 * 10)
     driver.get("http://www.liceoarzignano.it/" + (is_private and "comunicati" or "circolari") +
                "/appcircolaripub/ricerca.php?numero=0")
 
