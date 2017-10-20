@@ -1,1 +1,1 @@
-web: python3 main.py --debug
+web: python3 main.py
