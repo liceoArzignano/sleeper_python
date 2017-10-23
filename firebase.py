@@ -63,7 +63,6 @@ def fcm(item: News, is_debug: bool):
     message = {
         "to": "/topics/global",
         "priority": "high",
-        "notification": data,
         "data": data,
     }
 
