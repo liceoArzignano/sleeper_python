@@ -1,8 +1,9 @@
 from argparse import ArgumentParser
-from threading import Timer
+
+from apscheduler.schedulers.blocking import BlockingScheduler
+
 import firebase
 import webfetcher
-
 
 IS_DEBUG = False
 NO_NOTIFICATIONS = False
@@ -13,10 +14,6 @@ def main():
     items = webfetcher.fetch(False)
     firebase.database_push(items, IS_DEBUG, NO_NOTIFICATIONS)
     print("Done")
-
-    if not ONE_SHOT:
-        # Schedule next execution
-        Timer(60 * 60, main).start()
 
 
 # Parse arguments
@@ -36,4 +33,14 @@ if args.one_shot:
 
 
 # Execute
-main()
+if ONE_SHOT:
+    main()
+else:
+    # Schedule execution
+    sched = BlockingScheduler()
+
+    @sched.scheduled_job('cron', day_of_week='mon-fri', minutes=240)
+    def timed_job():
+          main()
+
+    sched.start()
