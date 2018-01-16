@@ -39,8 +39,8 @@ else:
     # Schedule execution
     sched = BlockingScheduler()
 
-    @sched.scheduled_job('cron', day_of_week='mon-fri', minutes=240)
+    @sched.scheduled_job('cron', day_of_week='mon-fri', hour=13)
     def timed_job():
-          main()
+        main()
 
     sched.start()
