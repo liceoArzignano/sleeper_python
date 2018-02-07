@@ -1,7 +1,9 @@
-from news import News
-from selenium import webdriver
 import os.path
 import urllib.request
+
+from selenium import webdriver
+
+from news import News
 
 DRIVER_URL = "https://github.com/liceoArzignano/snake_bold/releases/download/PhantomJS/phantomjs"
 DRIVER_PATH = "./phantomjs-snake"

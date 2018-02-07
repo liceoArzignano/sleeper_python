@@ -6,6 +6,10 @@ import requests
 API_KEY = os.environ['SNAKE_API_KEY']
 
 
+def get_child(db, day_path, number):
+    return db.child("news").child(day_path[2]).child(day_path[1]).child(day_path[0]).child(str(number))
+
+
 def exists(child):
     return child.get().val() is not None
 
@@ -34,11 +38,13 @@ def database_push(items: [], is_debug: bool, no_notification=False):
             "isPrivate": item.is_private
         }
 
-        child = db.child("news").child(str(item.number) + "-" + item.date).shallow()
+        day_path = item.date.split("-")
+
+        child = get_child(db, day_path, item.number).shallow()
 
         if not exists(child):
-            print("Creating /news/{}...".format(str(item.number) + "-" + item.date))
-            db.child("news").child(str(item.number) + "-" + item.date).set(data)
+            print("Creating /news/{}/{}...".format(item.date.replace("-", "/"), str(item.number)))
+            get_child(db, day_path, item.number).set(data)
             if not no_notification:
                 fcm(item, is_debug)
 
